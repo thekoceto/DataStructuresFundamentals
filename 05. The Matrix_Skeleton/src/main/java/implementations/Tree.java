@@ -2,14 +2,26 @@ package implementations;
 
 import interfaces.AbstractTree;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 public class Tree<E> implements AbstractTree<E> {
-    private Tree<E> root;
+    private E key;
     private Tree<E> parent;
-    private Tree<E> child;
+    private List<Tree <E>> children;
 
+    public Tree(E key, Tree <E>... children) {
+        this.key = key;
+        this.parent = null;
+        this.children = new ArrayList<>();
+        for (Tree<E> child : this.children){
+            this.children.add(child);
+            child.parent = this;
+        }
     }
+
     @Override
     public void setParent(Tree<E> parent) {
         this.parent = parent;
@@ -22,12 +34,12 @@ public class Tree<E> implements AbstractTree<E> {
 
     @Override
     public Tree<E> getParent() {
-        return null;
+        return this.parent;
     }
 
     @Override
     public E getKey() {
-        return null;
+        return this.key;
     }
 
     @Override
@@ -62,6 +74,22 @@ public class Tree<E> implements AbstractTree<E> {
 
     @Override
     public List<Tree<E>> subTreesWithGivenSum(int sum) {
+        return null;
+    }
+
+    private Tree<E> findTreeByKey(E parentKey) {
+        Deque<Tree<E>> queue = new ArrayDeque<>();
+
+        queue.offer(this);
+
+        while (!queue.isEmpty()) {
+            Tree<E> current = queue.poll();
+
+            if (current.key == parentKey)
+                return current;
+
+            current.children.forEach(queue::offer);
+        }
         return null;
     }
 }

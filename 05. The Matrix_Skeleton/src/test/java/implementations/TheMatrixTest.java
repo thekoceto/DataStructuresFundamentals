@@ -19,7 +19,7 @@ public class TheMatrixTest {
         int startRow = 0;
         int startCol = 0;
 
-        TheMatrix theMatrix = new TheMatrix(matrix, fillChar, startRow, startCol);
+        TheMatrix theMatrix = new TheMatrix (matrix, fillChar, startRow, startCol);
 
         theMatrix.solve();
 
@@ -46,7 +46,7 @@ public class TheMatrixTest {
         int startRow = 2;
         int startCol = 1;
 
-        TheMatrix theMatrix = new TheMatrix(matrix, fillChar, startRow, startCol);
+        TheMatrixPair theMatrix = new TheMatrixPair(matrix, fillChar, startRow, startCol);
 
         theMatrix.solve();
 
@@ -72,7 +72,7 @@ public class TheMatrixTest {
         int startRow = 2;
         int startCol = 1;
 
-        TheMatrix theMatrix = new TheMatrix(matrix, fillChar, startRow, startCol);
+        TheMatrixPair theMatrix = new TheMatrixPair(matrix, fillChar, startRow, startCol);
 
         theMatrix.solve();
 
@@ -98,7 +98,7 @@ public class TheMatrixTest {
         int startRow = 4;
         int startCol = 1;
 
-        TheMatrix theMatrix = new TheMatrix(matrix, fillChar, startRow, startCol);
+        TheMatrixPair theMatrix = new TheMatrixPair(matrix, fillChar, startRow, startCol);
 
         theMatrix.solve();
 
@@ -124,7 +124,7 @@ public class TheMatrixTest {
         int startRow = 4;
         int startCol = 0;
 
-        TheMatrix theMatrix = new TheMatrix(matrix, fillChar, startRow, startCol);
+        TheMatrixPair theMatrix = new TheMatrixPair(matrix, fillChar, startRow, startCol);
 
         theMatrix.solve();
 

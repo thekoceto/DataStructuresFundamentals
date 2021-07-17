@@ -2,14 +2,14 @@ package implementations;
 
 import java.util.Stack;
 
-public class TheMatrix {
+public class TheMatrixPair {
     private char[][] matrix;
     private char fillChar;
     private char toBeReplaced;
     private int startRow;
     private int startCol;
 
-    public TheMatrix(char[][] matrix, char fillChar, int startRow, int startCol) {
+    public TheMatrixPair(char[][] matrix, char fillChar, int startRow, int startCol) {
         this.matrix = matrix;
         this.fillChar = fillChar;
         this.startRow = startRow;
@@ -17,14 +17,24 @@ public class TheMatrix {
         this.toBeReplaced = this.matrix[this.startRow][this.startCol];
     }
 
+    private class Pair {
+        private int row;
+        private int col;
+
+        public Pair(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
     public void solve() {
-        Stack<int[]> stack = new Stack<>();
-        stack.push(new int[]{this.startRow, this.startCol});
+        Stack<Pair> stack = new Stack<>();
+        stack.push(new Pair (this.startRow, this.startCol));
 
         while (!stack.isEmpty()){
-            int[] toPop = stack.pop();
-            int row = toPop[0];
-            int col = toPop[1];
+            Pair toPop = stack.pop();
+            int row = toPop.row;
+            int col = toPop.col;
 
             this.matrix[row][col] =  this.fillChar;
 //
@@ -33,16 +43,16 @@ public class TheMatrix {
 //            System.out.println(this.toOutputString());
 
             if (indexAndValueValidation(row-1, col))
-                stack.push(new int[]{row - 1, col});
+                stack.push(new Pair (row-1, col));
 
             if (indexAndValueValidation(row+1, col))
-                stack.push(new int[]{row + 1, col});
+                stack.push(new Pair (row+1, col));
 
             if (indexAndValueValidation(row, col-1))
-                stack.push(new int[]{row, col - 1});
+                stack.push(new Pair (row, col-1));
 
             if (indexAndValueValidation(row, col+1))
-                stack.push(new int[]{row, col + 1});
+                stack.push(new Pair (row, col+1));
         }
     }
 
