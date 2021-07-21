@@ -2,7 +2,10 @@ package implementations;
 
 import interfaces.AbstractTree;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Tree<E> implements AbstractTree<E> {
@@ -78,7 +81,7 @@ public class Tree<E> implements AbstractTree<E> {
 
     private List<E> getKeysBfs(String type) {
         List<E> keys = new ArrayList<>();
-        Deque<Tree<E>> queue = new ArrayDeque<>();
+        ArrayDeque<Tree<E>> queue = new ArrayDeque<>();
 
         queue.offer(this);
 
@@ -99,37 +102,20 @@ public class Tree<E> implements AbstractTree<E> {
 
         return keys;
     }
-//    public String getAsString() {
-//        StringBuilder output = new StringBuilder();
-//
-//        getIndentAndKey(output, "", this);
-//
-//        return output.toString().trim();
-//    }
-//
-//    private void getIndentAndKey(StringBuilder output, String indent, Tree<E> eTree) {
-//        output
-//                .append(indent)
-//                .append(eTree.key)
-//                .append(System.lineSeparator());
-//
-//        for (Tree<E> child : eTree.children)
-//            getIndentAndKey(output, indent + "  ", child);
-//
-//    }
+
     private class Pair {
         private Tree<E> eTree;
         private int level;
 
-    public Pair(Tree<E> eTree) {
-        this.eTree = eTree;
-        this.level = 0;
+        public Pair(Tree<E> eTree) {
+            this.eTree = eTree;
+            this.level = 0;
+        }
+        public Pair(Tree<E> eTree, int level) {
+            this.eTree = eTree;
+            this.level = level;
+        }
     }
-    public Pair(Tree<E> eTree, int level) {
-        this.eTree = eTree;
-        this.level = level;
-    }
-}
     @Override
     public Tree<E> getDeepestLeftmostNode() {
         int maxLevel = -1;
@@ -156,29 +142,6 @@ public class Tree<E> implements AbstractTree<E> {
 
     }
 
-//    @Override
-//    public Tree<E> getDeepestLeftmostNode() {
-//        int level = 0;
-//        int maxLevel = -1;
-//        int res = -1;
-//
-//        return find(this, level, res, maxLevel);
-//    }
-//
-//    public Tree<E> find(Tree<E> deepestLeft, int level, int res, int maxLevel){
-//        find(deepestLeft, level++, res, maxLevel);
-//        for (Tree<E> child : deepestLeft.children) {
-//            if (level > maxLevel){
-//                deepestLeft = child;
-//                maxLevel = level;
-//            }
-//
-//            find(child, level++, res, maxLevel);
-//        }
-//
-//        return deepestLeft;
-//    }
-
     @Override
     public List<E> getLongestPath() {
         List<E> longestPath = new ArrayList<>();
@@ -196,35 +159,75 @@ public class Tree<E> implements AbstractTree<E> {
     @Override
     public List<List<E>> pathsWithGivenSum(int sum) {
         List<List<E>> result = new ArrayList<>();
-        ArrayDeque<Tree<E>> queue = new ArrayDeque<>();
 
+        ArrayDeque<Tree<E>> queue = new ArrayDeque<>();
         queue.offer(this);
 
-        int currentSum = (int) this.key;
-
         while (!queue.isEmpty()) {
-            List<E> toAdd = new ArrayList<>();
-
             Tree<E> current = queue.poll();
-            currentSum += (int) current.key;
-            toAdd.add(current.key);
+            checkPath(result, current, current, sum);
+            current.children.forEach(queue::offer);
+        }
 
-            if (currentSum == sum)
-                result.add(toAdd);
+        return result;
+    }
+
+    private void checkPath(List<List<E>> result, Tree<E> startTree,Tree<E> currentTree, int currentSum) {
+        currentSum -= (int) currentTree.key;
+
+        if (currentSum == 0)
+            addPathToResult(result, startTree, currentTree);
+
+        else if (currentSum > 0 && !currentTree.children.isEmpty()) {
+            for (Tree<E> child : currentTree.children)
+                checkPath(result, startTree, child, currentSum);
+
+        }
+    }
+
+    private void addPathToResult(List<List<E>> result, Tree<E> startTree, Tree<E> currentTree) {
+        List<E> toAdd = new ArrayList<>();
+
+        while (currentTree != startTree.parent){
+            toAdd.add(currentTree.key);
+            currentTree = currentTree.parent;
+        }
+        Collections.reverse(toAdd);
+        result.add(toAdd);
+    }
+
+    @Override
+    public List<Tree<E>> subTreesWithGivenSum(int sum) {
+        List<Tree<E>> result =  new ArrayList<>();
+
+        ArrayDeque<Tree<E>> queue = new ArrayDeque<>();
+        queue.offer(this);
+
+        while (!queue.isEmpty()){
+            Tree<E> current = queue.poll();
+
+            if (checkSum(current, sum))
+                result.add(current);
 
             current.children.forEach(queue::offer);
         }
         return result;
     }
 
-    @Override
-    public List<Tree<E>> subTreesWithGivenSum(int sum) {
-        List<Tree<E>> result = new ArrayList<>();
+    private boolean checkSum(Tree<E> eTree, int sum) {
+        ArrayDeque<Tree<E>> queue = new ArrayDeque<>();
 
-        return result;
+        queue.offer(eTree);
+
+        while (!queue.isEmpty()){
+            Tree<E> current = queue.poll();
+            sum -= (Integer) current.key;
+
+            if (sum < 0)
+                return false;
+
+            current.children.forEach(queue::offer);
+        }
+        return sum == 0;
     }
-
 }
-
-
-
