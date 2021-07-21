@@ -2,7 +2,9 @@ package implementations;
 
 import interfaces.AbstractTree;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Tree<E> implements AbstractTree<E> {
@@ -28,10 +30,14 @@ public class Tree<E> implements AbstractTree<E> {
     @Override
     public List<E> orderBfs() {
         List<E> result = new ArrayList<>();
-        Deque<Tree<E>> queue = new ArrayDeque<>();
+        ArrayDeque<Tree<E>> queue = new ArrayDeque<>();
+
+        if (this.key == null)
+            return result;
+
         queue.offer(this);
 
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty() ){
             Tree<E> current = queue.poll();
             result.add(current.key);
             current.children.forEach(queue::offer);
@@ -63,7 +69,7 @@ public class Tree<E> implements AbstractTree<E> {
     }
 
     private Tree<E> findTreeByKey(E parentKey) {
-        Deque<Tree<E>> queue = new ArrayDeque<>();
+        ArrayDeque<Tree<E>> queue = new ArrayDeque<>();
 
         queue.offer(this);
 
@@ -78,21 +84,6 @@ public class Tree<E> implements AbstractTree<E> {
         return null;
     }
 
-//    private Tree<E> findTreeByKey(E parentKey) {
-//        Deque<Tree<E>> stack = new ArrayDeque<>();
-//        stack.push(this);
-//
-//        while (!stack.isEmpty()){
-//            Tree<E> current = stack.pop();
-//
-//            if (current.key == parentKey)
-//                return current;
-//
-//            current.children.forEach(stack::push);
-//        }
-//        return null;
-//    }
-
 	@Override
     public void removeNode(E nodeKey) {
         Tree<E> toRemove = findTreeByKey(nodeKey);
@@ -105,51 +96,31 @@ public class Tree<E> implements AbstractTree<E> {
             toRemove.key = null;
         }else
             toRemove.parent.children.remove(toRemove);
-
     }
 
     @Override
     public void swap(E firstKey, E secondKey) {
 
-        Tree<E> node1 = findTreeByKey(firstKey);
-        Tree<E> node2 = findTreeByKey(secondKey);
+        Tree<E> firstNode = findTreeByKey(firstKey);
+        Tree<E> secondNode = findTreeByKey(secondKey);
 
-        if (node1 == null || node2 == null)
+        if (firstNode == null || secondNode == null)
             throw new IllegalArgumentException();
 
-        node1.key = secondKey;
-        node2.key = firstKey;
+        Tree<E> firstParent = firstNode.parent;
+        Tree<E> secondParent = secondNode.parent;
 
-        Tree<E> node1Parent = node1.parent;
-        Tree<E> node2Parent = node2.parent;
+        List<Tree<E>> firstChildren = firstNode.children;
+        List<Tree<E>> secondChildren = secondNode.children;
 
-        node1.parent = node2Parent;
-        node2.parent = node1Parent;
+        firstNode.parent  = secondParent;
+        secondNode.parent = firstParent;
 
-//        tree =  new Tree<>(7,
-//                new Tree<>(19,
-//                        new Tree<>(1),
-//                        new Tree<>(12),
-//                        new Tree<>(31)),
-//                new Tree<>(21),
-//                new Tree<>(14,
-//                        new Tree<>(23),
-//                        new Tree<>(6))
-//        );
-        if (node1Parent == null) {
-            swapRoot(node1);
-            return;
-        } else if (node2Parent == null) {
-            swapRoot(node2);
-            return;
-        }
+        firstNode.key  = secondKey;
+        secondNode.key = firstKey;
 
-
-        int index1 = node1Parent.children.indexOf(node1);
-        int index2 = node2Parent.children.indexOf(node2);
-
-        node1Parent.children.set(index1, node2);
-        node2Parent.children.set(index2, node2);
+        firstNode.children  = secondChildren;
+        secondNode.children = firstChildren;
     }
 
     private void swapRoot(Tree<E> node) {

@@ -16,9 +16,9 @@ public class Main {
         );
 
         System.out.println(tree.orderBfs());
-        tree.swap(7,19);
+        tree.swap(14, 31);
         System.out.println(tree.orderBfs());
-        tree.removeNode(19);
+        tree.removeNode(14);
         System.out.println(tree.orderBfs());
         tree.removeNode(7);
         System.out.println(tree.orderBfs());
