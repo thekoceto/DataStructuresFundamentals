@@ -27,10 +27,8 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
     }
 
     private void HeapifyUp(int index) {
-        while (isLess(index, parentIndex(index))){
-            this.swap(index, parentIndex(index));
-            index = parentIndex(index);
-        }
+        while (isLess(index, parentIndex(index)))
+            this.swap(index, index = parentIndex(index));
     }
 
     private int parentIndex(int index) {
@@ -54,5 +52,12 @@ public class MaxHeap<E extends Comparable<E>> implements Heap<E> {
             throw new IllegalStateException("There are no element to peek");
 
         return this.elements.get(0);
+    }
+
+    @Override
+    public String toString(){
+        StringBuilder output = new StringBuilder();
+        this.elements.forEach(element -> output.append(element).append(' '));
+        return output.toString().trim();
     }
 }
