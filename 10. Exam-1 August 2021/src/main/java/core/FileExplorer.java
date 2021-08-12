@@ -38,7 +38,8 @@ public class FileExplorer implements FileManager {
             if (file.getNumber() == number)
                 return file;
 
-            file.getChildren().forEach(deque::offer);
+            for (File child : file.getChildren())
+                deque.offer(child);
         }
 
         return null;
@@ -197,10 +198,10 @@ public class FileExplorer implements FileManager {
         output.append(file.getNumber());
         output.append(System.lineSeparator());
 
-        int[] index = new int[]{0, file.getChildren().size() - 1};
+        int[] index = new int[1] ;
         file.getChildren().forEach(
                 child -> {
-                    if (index[0]++ != index[1])
+                    if (index[0]++ != file.getChildren().size() - 1)
                         getAsString(child, output, childrenPrefix + "├── ", childrenPrefix + "│   ");
                     else
                         getAsString(child, output, childrenPrefix + "└── ", childrenPrefix + "    ");
